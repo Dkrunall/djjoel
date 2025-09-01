@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Unlock, Eye, EyeOff, Music, Play, Pause, Download, Clock, Calendar } from 'lucide-react';
-import { exclusiveTracks } from '@/lib/data/tracks.js';
+import { exclusiveTracks } from '@/lib/data/tracks';
 import { getExclusiveAccess, setExclusiveAccess, clearExclusiveAccess } from '@/lib/utils/storage';
 import { formatDuration } from '@/lib/utils/audio';
 import Image from 'next/image';
