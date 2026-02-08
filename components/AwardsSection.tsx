@@ -137,7 +137,7 @@ export default function AwardsSection() {
                         <span className="text-neutral-500 text-sm">(1)</span>
                         <h3 className="text-3xl font-medium">Øneheart</h3>
                         <p className="text-neutral-400 text-sm leading-relaxed">
-                            Dmitry Volynkin, aka Øneheart, embarked on his musical journey at 11. He's a visionary multi-genre artist crafting ambient, wave, and electronic landscapes.
+                            Dmitry Volynkin, aka Øneheart, embarked on his musical journey at 11. He&apos;s a visionary multi-genre artist crafting ambient, wave, and electronic landscapes.
                         </p>
                     </div>
                     <div className="flex-1 relative w-full h-[300px] mt-auto overflow-hidden bg-neutral-900">

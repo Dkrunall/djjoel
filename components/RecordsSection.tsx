@@ -51,7 +51,7 @@ export default function RecordsSection() {
                         transition={{ duration: 0.8 }}
                         className="text-[3.5rem] md:text-[7rem] lg:text-[8rem] leading-[0.9] font-medium tracking-tighter"
                     >
-                        Let's<br />Explore
+                        Let&apos;s<br />Explore
                     </motion.h2>
 
                     {/* Bottom Description */}
