@@ -1,12 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root{color-scheme:dark}
-html{@apply bg-[#0b0b0f] text-ink}
-.btn{@apply inline-flex items-center gap-2 px-4 py-2 rounded-full transition}
-.btn-primary{@apply btn bg-accent text-white hover:brightness-105}
-.card{@apply rounded-2xl border border-white/10 bg-[#111116]/90 shadow-xl backdrop-blur}
-.glitch{position:relative;display:inline-block;text-shadow:0 0 12px rgba(255,45,85,.35)}
-.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0}
-.glitch::before{transform:translate(2px,-1px);color:#ff2d55;opacity:.75}
-.glitch::after{transform:translate(-2px,1px);color:#b1142a;opacity:.75}
+
+:root {
+  color-scheme: dark
+}
+
+html {
+  @apply bg-[#0b0b0f] text-ink
+}
+
+.btn {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full transition
+}
+
+.btn-primary {
+  @apply btn bg-accent text-white hover:brightness-105
+}
+
+.card {
+  @apply rounded-2xl border border-white/10 bg-[#111116]/90 shadow-xl backdrop-blur
+}
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 0 12px rgba(255, 45, 85, .35)
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0
+}
+
+.glitch::before {
+  transform: translate(2px, -1px);
+  color: #ff2d55;
+  opacity: .75
+}
+
+.glitch::after {
+  transform: translate(-2px, 1px);
+  color: #b1142a;
+  opacity: .75
+}

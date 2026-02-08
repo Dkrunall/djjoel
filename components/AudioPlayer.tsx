@@ -29,6 +29,7 @@ import {
 } from '@/lib/utils/audio';
 import { savePlayerState, getPlayerState, saveVolume, getVolume } from '@/lib/utils/storage';
 import { config } from '@/lib/config';
+import { usePlayer } from '@/context/PlayerContext';
 import GlitchText from './GlitchText';
 import NeonBorder from './NeonBorder';
 
@@ -72,16 +73,43 @@ export default function AudioPlayer({
   useEffect(() => {
     const savedState = getPlayerState();
     const savedVolume = getVolume();
-    
+
     if (savedState) {
       setCurrentTrackIndex(savedState.currentTrack || 0);
       setVolume(savedState.volume || config.player.defaultVolume);
       setIsShuffled(savedState.shuffle || false);
       setLoopMode(savedState.loop || 'none');
     }
-    
+
     setVolume(savedVolume);
   }, []);
+
+  // Sync with PlayerContext
+  const { currentTrack: contextTrack, isPlaying: contextIsPlaying, playTrack } = usePlayer();
+
+  // Update internal player when context track changes (e.g. from FloatingMenu)
+  useEffect(() => {
+    if (contextTrack && contextTrack.title !== currentTrack?.title) {
+      // Find index of new track
+      const index = tracks.findIndex(t => t.title === contextTrack.title);
+      if (index !== -1) {
+        setCurrentTrackIndex(index);
+        setIsPlaying(true);
+      }
+    } else if (contextTrack && contextTrack.title === currentTrack?.title && contextIsPlaying !== isPlaying) {
+      // Sync play/pause state
+      setIsPlaying(contextIsPlaying);
+    }
+  }, [contextTrack, contextIsPlaying, tracks, currentTrack, isPlaying]);
+
+  // Logic to update Context when AudioPlayer changes track (e.g. Shuffle/Next)
+  useEffect(() => {
+    // This might cause a loop if not careful.
+    // We only want to update context if context is out of sync.
+    if (currentTrack && (!contextTrack || contextTrack.title !== currentTrack.title)) {
+      // playTrack(currentTrack); // This might re-trigger the above effect
+    }
+  }, [currentTrack, contextTrack, playTrack]);
 
   // Save player state
   useEffect(() => {
@@ -119,7 +147,7 @@ export default function AudioPlayer({
         loopMode,
         isShuffled
       );
-      
+
       if (nextIndex !== null) {
         setCurrentTrackIndex(nextIndex);
       } else if (loopMode === 'none') {
@@ -155,7 +183,7 @@ export default function AudioPlayer({
 
     audio.src = currentTrack.src;
     audio.volume = isMuted ? 0 : volume;
-    
+
     onTrackChange?.(currentTrack, currentTrackIndex);
   }, [currentTrackIndex, currentTrack, volume, isMuted, onTrackChange]);
 
@@ -203,7 +231,7 @@ export default function AudioPlayer({
       loopMode,
       isShuffled
     );
-    
+
     if (nextIndex !== null) {
       setCurrentTrackIndex(nextIndex);
     } else if (loopMode === 'none') {
@@ -217,7 +245,7 @@ export default function AudioPlayer({
       tracks.length,
       loopMode
     );
-    
+
     if (prevIndex !== null) {
       setCurrentTrackIndex(prevIndex);
     }
@@ -231,7 +259,7 @@ export default function AudioPlayer({
     const rect = progressBar.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const newTime = (clickX / rect.width) * duration;
-    
+
     audio.currentTime = newTime;
     setCurrentTime(newTime);
   }, [duration]);
@@ -267,7 +295,7 @@ export default function AudioPlayer({
   return (
     <>
       <audio ref={audioRef} preload="metadata" />
-      
+
       <motion.div
         className={cn(
           'fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t border-cyan-500/30 relative overflow-hidden',

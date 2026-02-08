@@ -1,11 +1,15 @@
 'use client';
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { useState, useEffect } from 'react';
+import { Inter, Syne } from "next/font/google";
+import { useState } from 'react';
 import "./globals.css";
-import Navigation from '@/components/Navigation';
+import Navigation from "@/components/Navigation";
+import FloatingMenu from "@/components/FloatingMenu";
+import { PlayerProvider } from "@/context/PlayerContext";
+import { LoaderProvider } from "@/context/LoaderContext";
 import AudioPlayer from '@/components/AudioPlayer';
+import Footer from '@/components/Footer';
 import { allTracks } from '@/lib/data/tracks';
 import { Track } from '@/lib/types';
 import { config } from '@/lib/config';
@@ -57,24 +61,38 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={`${inter.variable} font-sans antialiased bg-black text-white min-h-screen`}>
-        <Navigation 
-          isPlayerActive={isPlayerActive}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-        />
-        
-        <main className="pt-16 lg:pt-20 pb-24">
-          {children}
-        </main>
+        <PlayerProvider>
+          <LoaderProvider>
+            <div className="fixed inset-0 z-0 pointer-events-none">
+              <div className="max-w-7xl mx-auto h-full px-4 md:px-12 grid grid-cols-12 gap-8 md:gap-16 border-x border-white/5">
+                {/* Vertical Lines */}
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="h-full border-l border-white/10 last:border-r-0" />
+                ))}
+              </div>
+            </div>
 
-        {allTracks.length > 0 && (
-          <AudioPlayer
-            tracks={allTracks}
-            onTrackChange={handleTrackChange}
-            onPlayStateChange={handlePlayStateChange}
-            onMuteChange={handleMuteChange}
-          />
-        )}
+            <main className="pb-24">
+              {children}
+            </main>
+            <Footer />
+
+            {/* Unified Floating Menu & Player */}
+            <FloatingMenu />
+
+            {/* Headless Audio Player (Logic Only) */}
+            {allTracks.length > 0 && (
+              <div className="hidden">
+                <AudioPlayer
+                  tracks={allTracks}
+                  onTrackChange={handleTrackChange}
+                  onPlayStateChange={handlePlayStateChange}
+                  onMuteChange={handleMuteChange}
+                />
+              </div>
+            )}
+          </LoaderProvider>
+        </PlayerProvider>
       </body>
     </html>
   );
